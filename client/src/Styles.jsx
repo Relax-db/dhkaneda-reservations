@@ -148,7 +148,7 @@ const Days = styled.td`
   width:34px;
   -webkit-border-horizontal-spacing:2px;
   -webkit-border-vertical-spacing:2px;
-`
+`;
 
 const Box = styled.div`
   border-bottom-color:rgb(235, 235, 235);
@@ -179,4 +179,13 @@ const Cursor = styled.td`
   cursor:pointer;
 `;
 
-export default { AppWrapper, Reserve, Price, Star, CircleButton, Days, Box, Cursor };
+export default {
+  AppWrapper,
+  Reserve,
+  Price,
+  Star,
+  CircleButton,
+  Days,
+  Box,
+  Cursor
+};
