@@ -57,17 +57,18 @@ Run server:
 ```sh
 npm start
 ```
-Point browser to http://localhost:3000/ to view app
+> Point browser to http://localhost:3000/ to view app module
 
 
-## API
+## Module API
 
 ### Create a location listing
+#### Request Method and URL
 ```
 POST /api/reservations/locations
 ```
 #### Parameters
-The request body `data` includes 7 properties pertaining to details fo the location listing
+The request body `data` includes up to **7** properties pertaining to details for the location listing
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | data | object | **Required** The data of the new database record. Should include the properties described below.  |
@@ -82,8 +83,8 @@ All properties are **Required** except for `cleaning_fee` and `occupancy_tax`
 | `avg_rating`  | `number` | Reflects the average review rating of the location (decimal between 0 and 5.0) |
 | `total_reviews` | `number` | Reflects the total number of reviews related to the location |
 | `service_fee` | `number` | Reflects the base service fee to be added to the total checkout price |
-| `cleaning_fee` | [`number`] | Reflects the base cleaning fee to be added to the total checkout price |
-| `occupancy_tax` | [`number`] | Reflects the location based percentage tax charged for the reservation (decimal between 0 and 0.2) |
+| [`cleaning_fee`] | [`number`] | Reflects the base cleaning fee to be added to the total checkout price |
+| [`occupancy_tax`] | [`number`] | Reflects the location based percentage tax charged for the reservation (decimal between 0 and 0.2) |
 
 #### Example input data
 ```
@@ -116,12 +117,14 @@ Error: Unauthorized request
 ```
 
 
-### Create a reservation
+## Create a reservation
+
+#### Request Method and URL
 ```
 POST /api/reservations/locations/:location_id/reservations
 ```
 #### Parameters
-The request body `data` includes ? properties pertaining to details fo the location listing
+The request body `data` includes up to **7** properties pertaining to details for the location listing
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | data | object | **Required** The data of the new database record. Should include the properties described below.  |
@@ -136,8 +139,8 @@ All properties are **Required** except for `children` and `infants`
 | `checkin` | `date` | Reflects the check in date of the reservation |
 | `checkout` | `date` | Reflects the check out date of the reservation |
 | `adults` | `number` | Reflects the number adults associated with the reservation |
-| `children` | [`number`] | Reflects the number children associated with the reservation |
-| `infants` | [`number`] | Reflects the number infants associated with the reservation |
+| [`children`] | [`number`] | Reflects the number children associated with the reservation |
+| [`infants`] | [`number`] | Reflects the number infants associated with the reservation |
 
 #### Example input data
 ```
@@ -158,7 +161,7 @@ Status: 200 Created
 Location: /api/reservations/location/:location_id/reservations/:reservation_id
 ```
 ```
-Status: 403 Forbidden
+Status: 404 Forbidden
 Error: Listing does not exist
 Location: /api/reservations/location/:location_id
 ```
@@ -173,16 +176,63 @@ Error: Unauthorized request
 ```
 
 
-### Read location listing(s)
+## Get location listing(s)
 
+#### Request Method and URL
 ```
 GET /api/reservations/locations/:location_id
 ```
+#### Response
+The response body will be an `object` upon success. Example responses shown below.
+```
+Status: 200 OK
+Body: {
+    "location": "123 Outback Drive, Sydney, Australia",
+  "rate": 59,
+  "avg_rating": 4.89,
+  "total_reviews": 79,
+  "service_fee": 42,
+  "cleaning_fee": null,
+  "occupancy_tax": 0.15
+}
+```
+```
+Status: 404 Forbidden
+Error: Listing does not exist
+Location: /api/reservations/location/:location_id
+```
+```
+Status: 401 Forbidden
+Error: Unauthorized request
+```
 
-### Read location listing(s)
-
+## Get reservation(s)
+#### Request Method and URL
 ```
 GET /api/reservations/locations/:location_id/reservations
+```
+#### Response
+The response body will be an `object` upon success. Example responses shown below.
+```
+Status: 200 OK
+Body: {
+  "location_id": 00001,
+  "price": 1549,
+  "checkin": "Wed Apr 01 2020 11:02:47 GMT-0700 (Pacific Daylight Time)",
+  "checkout": "Wed Apr 03 2020 11:02:47 GMT-0700 (Pacific Daylight Time)",
+  "adults": 2,
+  "children": null,
+  "infants": 1,
+}
+```
+```
+Status: 404 Forbidden
+Error: Listing does not exist
+Location: /api/reservations/location/:location_id
+```
+```
+Status: 401 Forbidden
+Error: Unauthorized request
 ```
 
 ### Update
