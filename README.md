@@ -60,7 +60,7 @@ npm start
 > Point browser to http://localhost:3000/ to view app module
 
 
-## Module API
+## API
 
 ### Create a location listing
 #### Request Method and URL
@@ -176,7 +176,7 @@ Error: Unauthorized request
 ```
 
 
-## Get location listing details
+### Get location listing details
 
 #### Request Method and URL
 ```
@@ -206,7 +206,7 @@ Status: 401 Forbidden
 Error: Unauthorized request
 ```
 
-## Get reservation(s) from listing
+### Get reservation(s) from listing
 #### Request Method and URL
 ```
 GET /api/reservations/locations/:location_id/reservations
