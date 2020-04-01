@@ -9,7 +9,7 @@ const app = express();
 const port = 3000;
 
 app.use(cors());
-app.use('/', express.static(path.resolve(__dirname, '/../client/dist')));
+app.use('/', express.static(path.resolve(__dirname, '../client/dist')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -26,5 +26,5 @@ app.get('/reservation/api/location/', (req, res) => {
 });
 
 app.get('/*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '/../client/dist/index.html'));
+  res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
 });

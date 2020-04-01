@@ -51,9 +51,9 @@ class App extends React.Component {
 
   componentDidMount() {
     const splitUrl = window.location.href.split('/');
-    // console.log(splitUrl)
+    console.log("splitURL:", splitUrl)
     const index = splitUrl[splitUrl.length - 1];
-    // console.log(index);
+    console.log("index:", index);
     this.getFirstReservations(index);
     this.getLocation(index);
   }
