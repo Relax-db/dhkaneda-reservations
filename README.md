@@ -176,7 +176,7 @@ Error: Unauthorized request
 ```
 
 
-## Get location listing(s)
+## Get location listing details
 
 #### Request Method and URL
 ```
@@ -206,16 +206,16 @@ Status: 401 Forbidden
 Error: Unauthorized request
 ```
 
-## Get reservation(s)
+## Get reservation(s) from listing
 #### Request Method and URL
 ```
 GET /api/reservations/locations/:location_id/reservations
 ```
 #### Response
-The response body will be an `object` upon success. Example responses shown below.
+The response body will be an `list of objects` upon success. Example responses shown below.
 ```
 Status: 200 OK
-Body: {
+Body: [{
   "location_id": 00001,
   "price": 1549,
   "checkin": "Wed Apr 01 2020 11:02:47 GMT-0700 (Pacific Daylight Time)",
@@ -223,7 +223,16 @@ Body: {
   "adults": 2,
   "children": null,
   "infants": 1,
-}
+},
+{
+  "location_id": 00002,
+  "price": 719,
+  "checkin": "Wed Apr 04 2020 11:02:47 GMT-0700 (Pacific Daylight Time)",
+  "checkout": "Wed Apr 06 2020 11:02:47 GMT-0700 (Pacific Daylight Time)",
+  "adults": 4,
+  "children": 6,
+  "infants": null, 
+}]
 ```
 ```
 Status: 404 Forbidden
@@ -235,22 +244,165 @@ Status: 401 Forbidden
 Error: Unauthorized request
 ```
 
-### Update
-
+### Update location listing details
+#### Request Method and URL
 ```
 PATCH /api/reservations/locations/:location_id
 ```
+#### Parameters
+The request body data will include the field in the document to be updated. Only the fields included will be updated, and will replace the existing document's corresponding field with the new value.
 
+Omitted fields will keep their original values.
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| data | object | **Required** The data of the updated database record. Should include the properties described below that need to be updated.  |
+
+#### Data Properties
+At least one of the properties described below should be included with the **required** location id.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `id` | `number` | **Required** Reflects the unique id of the location|
+| [`location`] | [`string`] | Reflects the address, city, and country |
+| [`rate`] | [`number`] | Reflects the base cost of the location per night |
+| [`avg_rating`]  | [`number`] | Reflects the average review rating of the location (decimal between 0 and 5.0) |
+| [`total_reviews`] | [`number`] | Reflects the total number of reviews related to the location |
+| [`service_fee`] | `number` | Reflects the base service fee to be added to the total checkout price |
+| [`cleaning_fee`] | [`number`] | Reflects the base cleaning fee to be added to the total checkout price |
+| [`occupancy_tax`] | [`number`] | Reflects the location based percentage tax charged for the reservation (decimal between 0 and 0.2) |
+
+#### Example input data
+```
+{
+  "id":
+  "location": "124 Outback Drive, Sydney, Australia",
+  "rate": 68,
+  "avg_rating": 3.40,
+}
+```
+
+#### Reponse:
+```
+Status: 200 OK
+Location: /api/reservations/location/:location_id
+Updated Record: {
+  "location_id": 00001,
+  "location": "124 Outback Drive, Sydney, Australia",
+  "rate": 68,
+  "avg_rating": 3.40,
+  "total_reviews": 79,
+  "service_fee": 42,
+  "cleaning_fee": null,
+  "occupancy_tax": 0.15
+}
+```
+```
+Status: 404 Forbidden
+Error: Listing does not exist
+Location: /api/reservations/location/:location_id
+```
+```
+Status: 401 Forbidden
+Error: Unauthorized request
+```
+### Update reservation details
+#### Request Method and URL
 ```
 PATCH /api/reservations/locations/:location_id/reservations/:reservation_id
 ```
+#### Parameters
+The request body data will include the field in the document to be updated. Only the fields included will be updated, and will replace the existing document's corresponding field with the new value.
 
-### Delete
+Omitted fields will keep their original values.
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| data | object | **Required** The data of the updated database record. Should include the properties described below that need to be updated.  |
 
+#### Data Properties
+At least one of the properties described below should be included with the **required** reservation id.
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `id` | `number` | **Required** Reflects the unique id of the reservation|
+| [`location_id`] | [`number`] | Refers to the location with which the reservation will be associated |
+| [`price`] | [`number`] | Reflects the total calculated price of the reservation |
+| [`checkin`] | [`date`] | Reflects the check in date of the reservation |
+| [`checkout`] | [`date`] | Reflects the check out date of the reservation |
+| [`adults`] | [`number`] | Reflects the number adults associated with the reservation |
+| [`children`] | [`number`] | Reflects the number children associated with the reservation |
+| [`infants`] | [`number`] | Reflects the number infants associated with the reservation |
+
+#### Example input data
+```
+{
+  "id": 000001,
+  "price": 1949,
+  "checkin": "Wed Apr 01 2020 11:02:47 GMT-0700 (Pacific Daylight Time)",
+  "checkout": "Wed Apr 05 2020 11:02:47 GMT-0700 (Pacific Daylight Time)",
+}
+```
+
+#### Reponse:
+```
+Status: 200 OK
+Location: /api/reservations/location/:location_id/reservations/:reservation_id
+Updated Record: {
+  "id": 000001,
+  "location_id": 00001,
+  "price": 1949,
+  "checkin": "Wed Apr 01 2020 11:02:47 GMT-0700 (Pacific Daylight Time)",
+  "checkout": "Wed Apr 05 2020 11:02:47 GMT-0700 (Pacific Daylight Time)",
+  "adults": 2,
+  "children": null,
+  "infants": 1,
+}
+```
+```
+Status: 404 Forbidden
+Error: Reservation does not exist
+Location: /api/reservations/location/:location_id/reservations/:reservation_id
+```
+```
+Status: 401 Forbidden
+Error: Unauthorized request
+```
+
+### Delete a location listing
+#### Request Method and URL
 ```
 DELETE /api/reservations/locations/:location_id
 ```
+#### Reponse:
+```
+Status: 200 OK
+Location and associated reservations deleted: reservations/locations/:location_id
+```
+```
+Status: 404 Forbidden
+Error: Listing does not exist
+Location: /api/reservations/location/:location_id
+```
+```
+Status: 401 Forbidden
+Error: Unauthorized request
+```
 
+### Delete a reservation
+#### Request Method and URL
 ```
 DELETE /api/reservations/locations/:location_id/reservations/:reservation_id
+```
+#### Reponse:
+```
+Status: 200 OK
+Reservation deleted: reservations/locations/:location_id/reservations/:reservation_id
+```
+```
+Status: 404 Forbidden
+Error: Reservation does not exist
+Location: /api/reservations/location/:location_id/reservations/:reservation_id
+```
+```
+Status: 401 Forbidden
+Error: Unauthorized request
 ```
