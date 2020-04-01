@@ -54,6 +54,6 @@ npm run react-dev
 Run server:
 
 ```sh
-npm run server-dev
+npm start
 ```
 Go to url http://localhost:3000/ to view app
