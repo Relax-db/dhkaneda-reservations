@@ -48,7 +48,6 @@ const Star = styled.img`
   width: 9px;
 `;
 
-
 const Reserve = styled.button`
   display: inline-block !important;
   position: relative !important;
