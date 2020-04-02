@@ -65,7 +65,7 @@ npm start
 ### Create a listing
 #### Request Method and URL
 ```
-POST /api/users/:user_id/locations
+POST /api/locations
 ```
 #### Parameters
 The request body `data` includes up to **7** properties pertaining to details for the location listing
@@ -81,9 +81,6 @@ All properties are **Required** except for `cleaning_fee` and `occupancy_tax`
 | `host_id` | `number` | Reflects the user id of the host  |
 | `location` | `string` | Reflects the address, city, and country |
 | `rate` | `number` | Reflects the base cost of the location per night |
-| `avg_rating`  | `number` | Reflects the average review rating of the location (decimal between 0 and 5.0) |
-| `total_reviews` | `number` | Reflects the total number of reviews related to the location |
-| `service_fee` | `number` | Reflects the base service fee to be added to the total checkout price |
 | [`cleaning_fee`] | [`number`] | Reflects the base cleaning fee to be added to the total checkout price |
 | [`occupancy_tax`] | [`number`] | Reflects the location based percentage tax charged for the booking (decimal between 0 and 0.2) |
 
@@ -93,9 +90,6 @@ All properties are **Required** except for `cleaning_fee` and `occupancy_tax`
   "host_id" : 0000013
   "location": "123 Outback Drive, Sydney, Australia",
   "rate": 59,
-  "avg_rating": 4.89,
-  "total_reviews": 79,
-  "service_fee": 42,
   "cleaning_fee": null,
   "occupancy_tax": 0.15
 }
@@ -103,14 +97,14 @@ All properties are **Required** except for `cleaning_fee` and `occupancy_tax`
 
 #### Reponse:
 ```
-Status: 200 Created
-Location: /api/bookings/location/:location_id
+Status: 201 Created
+Location: /api/locations:location_id
 ```
 
 ```
 Status: 403 Forbidden
 Error: Listing already exists
-Location: /api/bookings/location/:location_id
+Location: /api/locations/:location_id
 ```
 
 ```
@@ -123,7 +117,7 @@ Error: Unauthorized request
 
 #### Request Method and URL
 ```
-POST /api/users/:users/locations/:location_id/bookings
+POST /api/locations/:location_id/bookings
 ```
 #### Parameters
 The request body `data` includes up to **7** properties pertaining to details for the location listing
@@ -161,18 +155,18 @@ All properties are **Required** except for `children` and `infants`
 
 #### Reponse:
 ```
-Status: 200 Created
-Location: /api/bookings/location/:location_id/bookings/:booking_id
+Status: 201 Created
+Location: /api/locations/:location_id/bookings/:booking_id
 ```
 ```
 Status: 404 Forbidden
 Error: Listing does not exist
-Location: /api/bookings/location/:location_id
+Location: /api/locations/:location_id
 ```
 ```
 Status: 403 Forbidden
 Error: booking already exists
-Location: /api/bookings/location/:location_id/bookings/:booking_id
+Location: /api/location/:location_id/bookings/:booking_id
 ```
 ```
 Status: 401 Forbidden
@@ -184,7 +178,7 @@ Error: Unauthorized request
 
 #### Request Method and URL
 ```
-GET /api/users/:user_id/locations
+GET /locations/:location_id
 ```
 #### Response
 The response body will be an `object` upon success. Example responses shown below.
@@ -205,7 +199,7 @@ Body: {
 ```
 Status: 404 Forbidden
 Error: Listing does not exist
-Location: /api/bookings/location/:location_id
+Location: /api/location/:location_id
 ```
 ```
 Status: 401 Forbidden
@@ -215,7 +209,7 @@ Error: Unauthorized request
 ### Get booking(s) from listing
 #### Request Method and URL
 ```
-GET /api/users/:user_id/locations/:location_id/bookings
+GET /api/:location_id/bookings
 ```
 #### Response
 The response body will be an `list of objects` upon success. Example responses shown below.
@@ -247,7 +241,7 @@ Body: [{
 ```
 Status: 404 Forbidden
 Error: Listing does not exist
-Location: /api/bookings/location/:location_id
+Location: /api/locations/:location_id
 ```
 ```
 Status: 401 Forbidden
@@ -257,7 +251,7 @@ Error: Unauthorized request
 ### Update location listing details
 #### Request Method and URL
 ```
-PATCH /api/users/:user_id/locations/:location_id
+PATCH /api/locations/:location_id
 ```
 #### Parameters
 The request body data will include the field in the document to be updated. Only the fields included will be updated, and will replace the existing document's corresponding field with the new value.
@@ -320,7 +314,7 @@ Error: Unauthorized request
 ### Update booking details
 #### Request Method and URL
 ```
-PATCH /api/users/:user_id/bookings/:booking_id
+PATCH /api/bookings/:booking_id
 ```
 #### Parameters
 The request body data will include the field in the document to be updated. Only the fields included will be updated, and will replace the existing document's corresponding field with the new value.
@@ -359,7 +353,7 @@ At least one of the properties described below should be included with the **req
 #### Reponse:
 ```
 Status: 200 OK
-Location: /api/bookings/location/:location_id/bookings/:booking_id
+Location: /api/bookings/:booking_id
 Updated Record: {
   "user_id": 000012,
   "booking_id": 000001,
@@ -385,7 +379,7 @@ Error: Unauthorized request
 ### Delete a location listing
 #### Request Method and URL
 ```
-DELETE /api/users/:user_id/locations/:location_id
+DELETE /api/locations/:location_id
 ```
 #### Parameters
 The request body data will include the field in the document to be updated. Only the fields included will be updated, and will replace the existing document's corresponding field with the new value.
@@ -406,7 +400,7 @@ At least one of the properties described below should be included with the **req
 #### Reponse:
 ```
 Status: 200 OK
-Location and associated bookings deleted: bookings/locations/:location_id
+Location and associated bookings deleted: /locations/:location_id
 ```
 ```
 Status: 404 Forbidden
@@ -421,7 +415,7 @@ Error: Unauthorized request
 ### Delete a booking
 #### Request Method and URL
 ```
-DELETE /api/users/:user_id/bookings/:booking_id
+DELETE /api/bookings/:booking_id
 ```
 #### Parameters
 The request body data will include the field in the document to be updated. Only the fields included will be updated, and will replace the existing document's corresponding field with the new value.
@@ -442,7 +436,7 @@ At least one of the properties described below should be included with the **req
 #### Reponse:
 ```
 Status: 200 OK
-booking deleted: bookings/locations/:location_id/bookings/:booking_id
+booking deleted: /api/locations/:location_id/bookings/:booking_id
 ```
 ```
 Status: 404 Forbidden
