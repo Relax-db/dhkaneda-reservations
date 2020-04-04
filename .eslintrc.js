@@ -23,8 +23,5 @@ module.exports = {
     'react',
   ],
   rules: {
-    'comma-dangle': 0,
-    'import/extensions': 0,
-    'no-plusplus': 0
   },
 };
