@@ -3,7 +3,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
-const Controller = require('./Controller.js');
+// const Controller = require('./Controller.js');
+
+const { generateLocations } = require('../db/dataGen');
 
 const app = express();
 const port = 3000;
@@ -15,16 +17,21 @@ app.use(bodyParser.json());
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
-// reservations
-app.get('/reservation/api/reservations', (req, res) => {
-  Controller.getFirstReservations(req, res);
-});
+// // reservations
+// app.get('/reservation/api/reservations', (req, res) => {
+//   Controller.getFirstReservations(req, res);
+// });
 
-// locations
-app.get('/reservation/api/location/', (req, res) => {
-  Controller.getLocation(req, res);
-});
+// // locations
+// app.get('/reservation/api/location/', (req, res) => {
+//   Controller.getLocation(req, res);
+// });
 
-app.get('/*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
+// app.get('/*', (req, res) => {
+//   res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
+// });
+
+app.get('/test', (req, res) => {
+  const data = generateLocations(100);
+  res.send(data);
 });
