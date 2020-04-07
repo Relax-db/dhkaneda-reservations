@@ -7,13 +7,13 @@ const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 const bar2 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 const bar3 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
-const USER_COUNT = 50000;
+const USER_COUNT = 500000;
 const HOST_COUNT = USER_COUNT * 0.06; //  300
 const LOCATION_COUNT = USER_COUNT * 0.20; //  1000
 const BOOKING_COUNT = USER_COUNT * 0.40; //  2000
 
 const userWriter = createCsvWriter({
-  path: './data/user.csv',
+  path: './db/data/user.csv',
   header: [
     { id: 'id', title: 'id' },
     { id: 'dateCreated', title: 'dateCreated' },
@@ -23,7 +23,7 @@ const userWriter = createCsvWriter({
 });
 
 const locationWriter = createCsvWriter({
-  path: './data/locations.csv',
+  path: './db/data/locations.csv',
   header: [
     { id: 'id', title: 'id' },
     { id: 'user_id', title: 'user_id' },
@@ -38,7 +38,7 @@ const locationWriter = createCsvWriter({
 });
 
 const bookingWriter = createCsvWriter({
-  path: './data/bookings.csv',
+  path: './db/data/bookings.csv',
   header: [
     { id: 'id', title: 'id' },
     { id: 'user_id', title: 'user_id' },
@@ -123,7 +123,7 @@ const generateBookings = () => {
   return bookings;
 };
 
-let multiplier = 1000;
+let multiplier = 100;
 const multiplierStart = multiplier;
 
 

@@ -8,10 +8,10 @@
     "node": ">=6.13.0"
   },
   "scripts": {
-    "seed": "node ./db/dummyData.js",
     "react-dev": "webpack -d --watch",
     "start": "nodemon server/index.js",
-    "test": "jest"
+    "test": "jest",
+    "dataGen": "node --max-old-space-size=1024 ./db/dataGen.js"
   },
   "dependencies": {
     "babel": "^6.23.0",
