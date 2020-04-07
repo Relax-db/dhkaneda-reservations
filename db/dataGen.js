@@ -7,9 +7,9 @@ const _ = require('lodash');
 const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 const bar2 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 const bar3 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-const bar4 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-const bar5 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
+let startTime = new Date().getTime();
+let originalTime = new Date().getTime();
 const USER_COUNT = 5000; // 500000
 const HOST_COUNT = USER_COUNT * 0.06;
 const BOOKING_COUNT = 1000; // 100000
@@ -190,8 +190,8 @@ const writeBookingsByUser = () => {
         writeBookingsByUser();
       });
   } else {
-    bar5.stop();
-    console.log('BookingsByUser written');
+    console.log(`BookingsByUser written - ${Math.abs(startTime - new Date().getTime())}ms elapsed`);
+    console.log(`${Math.abs(originalTime - new Date().getTime())}ms elapsed in total`);
   }
 };
 
@@ -203,10 +203,9 @@ const writeBookingsByLocation = () => {
         writeBookingsByLocation();
       });
   } else {
-    bar4.stop();
-    console.log('BookingsByLocation written');
+    console.log(`BookingsByLocation written - ${Math.abs(startTime - new Date().getTime())}ms elapsed`);
+    startTime = new Date();
     multiplier = multiplierStart;
-    bar5.start(bookings.length * multiplierStart, 0);
     writeBookingsByUser();
   }
 };
@@ -221,9 +220,9 @@ const writeBookings = () => {
       });
   } else {
     bar3.stop();
-    console.log('Bookings written');
+    console.log(`Bookings written - ${Math.abs(startTime - new Date().getTime())}ms elapsed`);
+    startTime = new Date();
     multiplier = multiplierStart;
-    bar4.start(bookings.length * multiplierStart, 0);
     writeBookingsByLocation();
   }
 };
@@ -238,7 +237,8 @@ const writeLocations = () => {
       });
   } else {
     bar2.stop();
-    console.log('Locations written');
+    console.log(`Locations written - ${Math.abs(startTime - new Date().getTime())}ms elapsed`);
+    startTime = new Date();
     multiplier = multiplierStart;
     bar3.start(BOOKING_COUNT * multiplierStart, 0);
     writeBookings();
@@ -255,7 +255,8 @@ const writeUsers = () => {
       });
   } else {
     bar.stop();
-    console.log('Users written');
+    console.log(`Users written - ${Math.abs(startTime - new Date().getTime())}ms elapsed`);
+    startTime = new Date();
     multiplier = multiplierStart;
     bar2.start(LOCATION_COUNT * multiplierStart, 0);
     writeLocations();
