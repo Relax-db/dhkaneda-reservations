@@ -1,21 +1,21 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable max-classes-per-file */
 const faker = require('faker');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const cliProgress = require('cli-progress');
-const _ = require('lodash');
 
 const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 const bar2 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 const bar3 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
 let startTime = new Date().getTime();
-let originalTime = new Date().getTime();
-const USER_COUNT = 5000; // 500000
+const originalTime = new Date().getTime();
+const USER_COUNT = 500000; // 500000
 const HOST_COUNT = USER_COUNT * 0.06;
-const BOOKING_COUNT = 1000; // 100000
+const BOOKING_COUNT = 100000; // 100000
 const LOCATION_COUNT = BOOKING_COUNT / 2;
 
-let multiplier = 1; // 100
+let multiplier = 100; // 100
 const multiplierStart = multiplier;
 
 const userWriter = createCsvWriter({
@@ -58,45 +58,6 @@ const bookingWriter = createCsvWriter({
   ],
 });
 
-const bookingsByLocationWriter = createCsvWriter({
-  path: './db/cassandra/data/bookingsByLocation.csv',
-  header: [
-    { id: 'booking_id', title: 'id' },
-    { id: 'user_id', title: 'user_id' },
-    { id: 'location_id', title: 'location_id' },
-    { id: 'host_id', title: 'host_id' },
-    { id: 'address', title: 'address' },
-    { id: 'rate', title: 'rate' },
-    { id: 'avg_rating', title: 'avg_rating' },
-    { id: 'total_reviews', title: 'total_reviews' },
-    { id: 'service_fee', title: 'service_fee' },
-    { id: 'cleaning_fee', title: 'cleaning_fee' },
-    { id: 'occupancy_tax', title: 'occupancy_tax' },
-    { id: 'checkin', title: 'checkin' },
-    { id: 'checkout', title: 'checkout' },
-    { id: 'total_cost', title: 'total_cost' },
-    { id: 'adults', title: 'adults' },
-    { id: 'children', title: 'children' },
-    { id: 'infants', title: 'infants' },
-  ],
-});
-
-const bookingsByUserWriter = createCsvWriter({
-  path: './db/cassandra/data/bookingsByUser.csv',
-  header: [
-    { id: 'booking_id', title: 'bookding_id' },
-    { id: 'user_id', title: 'user_id' },
-    { id: 'userName', title: 'username' },
-    { id: 'password', title: 'password' },
-    { id: 'location_id', title: 'location_id' },
-    { id: 'checkin', title: 'checkin' },
-    { id: 'checkout', title: 'checkout' },
-    { id: 'total_cost', title: 'total_cost' },
-    { id: 'adults', title: 'adults' },
-    { id: 'children', title: 'children' },
-    { id: 'infants', title: 'infants' },
-  ],
-});
 
 class User {
   constructor(id) {
@@ -137,13 +98,10 @@ class Booking {
     this.infants = faker.random.number({ min: 0, max: 3 });
   }
 }
-const users = [];
-const locations = [];
-const bookings = [];
-const bookingsByLocation = [];
-const bookingsByUser = [];
+
 
 const generateUsers = () => {
+  const users = [];
   for (let i = 0; i < USER_COUNT; i += 1) {
     users.push(new User(i));
     bar.increment();
@@ -152,6 +110,7 @@ const generateUsers = () => {
 };
 
 const generateLocations = () => {
+  const locations = [];
   for (let i = 0; i < LOCATION_COUNT; i += 1) {
     locations.push(new Location(i, faker.random.number({ min: 0, max: HOST_COUNT })));
     bar2.increment();
@@ -160,6 +119,7 @@ const generateLocations = () => {
 };
 
 const generateBookings = () => {
+  const bookings = [];
   for (let i = 0; i < BOOKING_COUNT; i += 1) {
     const newBooking = new Booking(
       i,
@@ -167,48 +127,11 @@ const generateBookings = () => {
       faker.random.number({ min: 0, max: LOCATION_COUNT }),
     );
     bookings.push(newBooking);
-
-    const newBookingWithLocation = _.assign({}, newBooking);
-    _.assign(newBookingWithLocation, locations[newBooking.location_id]);
-    bookingsByLocation.push(newBookingWithLocation);
-
-    const newBookingWithUser = _.assign({}, newBooking);
-    _.assign(newBookingWithUser, users[newBooking.user_id]);
-    bookingsByUser.push(newBookingWithUser);
-
     bar3.increment();
   }
   return bookings;
 };
 
-
-const writeBookingsByUser = () => {
-  if (multiplier !== 0) {
-    multiplier -= 1;
-    bookingsByUserWriter.writeRecords(bookingsByUser)
-      .then(() => {
-        writeBookingsByUser();
-      });
-  } else {
-    console.log(`BookingsByUser written - ${Math.abs(startTime - new Date().getTime())}ms elapsed`);
-    console.log(`${Math.abs(originalTime - new Date().getTime())}ms elapsed in total`);
-  }
-};
-
-const writeBookingsByLocation = () => {
-  if (multiplier !== 0) {
-    multiplier -= 1;
-    bookingsByLocationWriter.writeRecords(bookingsByLocation)
-      .then(() => {
-        writeBookingsByLocation();
-      });
-  } else {
-    console.log(`BookingsByLocation written - ${Math.abs(startTime - new Date().getTime())}ms elapsed`);
-    startTime = new Date();
-    multiplier = multiplierStart;
-    writeBookingsByUser();
-  }
-};
 
 const writeBookings = () => {
   if (multiplier !== 0) {
@@ -223,7 +146,6 @@ const writeBookings = () => {
     console.log(`Bookings written - ${Math.abs(startTime - new Date().getTime())}ms elapsed`);
     startTime = new Date();
     multiplier = multiplierStart;
-    writeBookingsByLocation();
   }
 };
 

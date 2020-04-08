@@ -24,4 +24,5 @@ coverage
 build/
 bundle.js
 
-db/data
+db/cassandra/data
+db/postgres/data

@@ -11,7 +11,8 @@
     "react-dev": "webpack -d --watch",
     "start": "nodemon server/index.js",
     "test": "jest",
-    "dataGen": "node --max-old-space-size=1024 ./db/dataGen.js"
+    "dataGenPG": "node --max-old-space-size=8192 ./db/dataGenPG.js",
+    "dataGenCASS": "node --max-old-space-size=8192 ./db/dataGenCASS.js"
   },
   "dependencies": {
     "babel": "^6.23.0",
