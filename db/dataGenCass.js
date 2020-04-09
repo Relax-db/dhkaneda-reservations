@@ -14,7 +14,7 @@ const BOOKING_COUNT = 200000; // 200000
 const LOCATION_COUNT = BOOKING_COUNT / 2;
 
 let elapsedWrites = 0;
-let multiplier = 20; // 100
+let multiplier = 100; // 100
 const multiplierStart = multiplier;
 
 const bookingsByLocationWriter = createCsvWriter({
@@ -89,9 +89,9 @@ const generateBookingsByLocation = (elapsedMult) => {
   for (let i = startIndex; i < endIndex; i += 1) {
     const newBookingByLocation = new BookingByLocation(
       i,
-      faker.random.number({ min: 0, max: USER_COUNT }),
-      faker.random.number({ min: 0, max: HOST_COUNT }),
-      faker.random.number({ min: 0, max: LOCATION_COUNT }),
+      faker.random.number({ min: 0, max: USER_COUNT * multiplier }),
+      faker.random.number({ min: 0, max: HOST_COUNT * multiplier }),
+      faker.random.number({ min: 0, max: LOCATION_COUNT * multiplier }),
     );
     bookingsByLocation.push(newBookingByLocation);
     bar.increment();
@@ -110,8 +110,8 @@ const generateBookingsByUser = (elapsedMult) => {
   for (let i = startIndex; i < endIndex; i += 1) {
     const newBookingByUser = new BookingByUser(
       i,
-      faker.random.number({ min: 0, max: USER_COUNT }),
-      faker.random.number({ min: 0, max: LOCATION_COUNT }),
+      faker.random.number({ min: 0, max: USER_COUNT * multiplier  }),
+      faker.random.number({ min: 0, max: LOCATION_COUNT * multiplier  }),
     );
     bookingsByUser.push(newBookingByUser);
     bar2.increment();
