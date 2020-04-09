@@ -1,14 +1,14 @@
 CREATE TABLE users (
-  user_id SERIAL PRIMARY KEY,
-  dateCreated DATE,
+  userid INT PRIMARY KEY,
+  dateCreated VARCHAR(250),
   username VARCHAR(50),
   password VARCHAR(50)
 );
 
 CREATE TABLE locations (
-  location_id SERIAL PRIMARY KEY,
-  host_id INT,
-  address VARCHAR(250),
+  locationid INT PRIMARY KEY,
+  hostid INT,
+  locationaddress VARCHAR(250),
   rate SMALLINT,
   avg_rating FLOAT,
   total_reviews SMALLINT,
@@ -18,11 +18,11 @@ CREATE TABLE locations (
 );
 
 CREATE TABLE bookings (
-  booking_id SERIAL PRIMARY KEY,
-  user_id INT,
-  location_id INT,
-  checkin DATE,
-  checkout DATE,
+  bookingid INT PRIMARY KEY,
+  userid INT,
+  locationid INT,
+  checkin VARCHAR(250),
+  checkout VARCHAR(250),
   total_cost INT,
   adults SMALLINT,
   children SMALLINT,
@@ -35,8 +35,8 @@ COPY locations from '/Users/dhkaneda/Development/reservation-services/db/postgre
 
 COPY bookings from '/Users/dhkaneda/Development/reservation-services/db/postgres/data/bookings.csv' (delimiter ',');
 
-ALTER TABLE locations ADD CONSTRAINT fk1 FOREIGN KEY (host_id) REFERENCES users(user_id);
+ALTER TABLE locations ADD CONSTRAINT fk1 FOREIGN KEY (hostid) REFERENCES users(userid);
 
-ALTER TABLE bookings ADD CONSTRAINT fk2 FOREIGN KEY (user_id) REFERENCES users(user_id);
+ALTER TABLE bookings ADD CONSTRAINT fk2 FOREIGN KEY (userid) REFERENCES users(userid);
 
-ALTER TABLE bookings ADD CONSTRAINT fk3 FOREIGN KEY (location_id) REFERENCES locations(location_id);
+ALTER TABLE bookings ADD CONSTRAINT fk3 FOREIGN KEY (locationid) REFERENCES locations(locationid);

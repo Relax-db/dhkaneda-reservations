@@ -6,39 +6,41 @@ CREATE KEYSPACE IF NOT EXISTS bookings
 USE bookings;
 
 CREATE TABLE locations (
-  host_id int,
-  user_id int,
-
-  location_id int,
+  bookingid int,
+  userid int,
+  locationid int,
+  hostid int,
   address text,
   rate int,
   avg_rating float,
   total_reviews int,
   service_fee int,
   cleaning_fee int,
-  occupancy_tax int,
-
-  booking_id int,
-  checkin date,
-  checkout date,
+  occupancy_tax float,
+  checkin text,
+  checkout text,
   total_cost int,
   adults int,
   children int,
   infants int,
-  PRIMARY KEY (location_id, checkin)
-) WITH CLUSTERING ORDER BY (checkin ASC);
+  PRIMARY KEY (locationid, checkin)
+);
 
 CREATE TABLE users (
-  user_id int,
-  username varchar,
-  password varchar,
-  location_id int,
-  booking_id int,
-  checkin date,
-  checkout date,
+  bookingid int,
+  userid int,
+  username text,
+  password text,
+  locationid int,
+  checkin text,
+  checkout text,
   total_cost INT,
   adults int,
   children int,
   infants int,
-  PRIMARY KEY (user_id)
+  PRIMARY KEY (userid)
 );
+
+COPY locations (bookingid, userid, locationid, hostid,address, rate, avg_rating, total_reviews, service_fee, cleaning_fee, occupancy_tax, checkin, checkout, total_cost, adults, children, infants) FROM '/Users/dhkaneda/Development/reservation-services/db/cassandra/data/bookingsByLocation.csv';
+
+COPY users (bookingid, userid, username, password, locationid, checkin, checkout, total_cost, adults, children, infants) FROM '/Users/dhkaneda/Development/reservation-services/db/cassandra/data/bookingsByUser.csv';

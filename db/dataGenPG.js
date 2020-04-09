@@ -15,66 +15,42 @@ const HOST_COUNT = USER_COUNT * 0.06;
 const BOOKING_COUNT = 100000; // 100000
 const LOCATION_COUNT = BOOKING_COUNT / 2;
 
-let multiplier = 100; // 100
+let elapsedWrites = 0;
+let multiplier = 20; // 100
 const multiplierStart = multiplier;
 
 const userWriter = createCsvWriter({
-  path: './db/postgres/data/user.csv',
-  header: [
-    { id: 'user_id', title: 'user_id' },
-    { id: 'dateCreated', title: 'dateCreated' },
-    { id: 'userName', title: 'username' },
-    { id: 'password', title: 'password' },
-  ],
+  path: './postgres/data/user.csv',
+  header: ['userid', 'dateCreated', 'username', 'password'],
 });
 
 const locationWriter = createCsvWriter({
-  path: './db/postgres/data/locations.csv',
-  header: [
-    { id: 'location_id', title: 'location_id' },
-    { id: 'host_id', title: 'host_id' },
-    { id: 'address', title: 'address' },
-    { id: 'rate', title: 'rate' },
-    { id: 'avg_rating', title: 'avg_rating' },
-    { id: 'total_reviews', title: 'total_reviews' },
-    { id: 'service_fee', title: 'service_fee' },
-    { id: 'cleaning_fee', title: 'cleaning_fee' },
-    { id: 'occupancy_tax', title: 'occupancy_tax' },
-  ],
+  path: './postgres/data/locations.csv',
+  header: ['locationid', 'hostid', 'address', 'rate', 'avg_rating', 'total_reviews', 'service_fee', 'cleaning_fee', 'occupancy_tax'],
 });
 
 const bookingWriter = createCsvWriter({
-  path: './db/postgres/data/bookings.csv',
-  header: [
-    { id: 'booking_id', title: 'booking_id' },
-    { id: 'user_id', title: 'user_id' },
-    { id: 'location_id', title: 'location_id' },
-    { id: 'checkin', title: 'checkin' },
-    { id: 'checkout', title: 'checkout' },
-    { id: 'total_cost', title: 'total_cost' },
-    { id: 'adults', title: 'adults' },
-    { id: 'children', title: 'children' },
-    { id: 'infants', title: 'infants' },
-  ],
+  path: './postgres/data/bookings.csv',
+  header: ['bookingid', 'userid', 'locationid', 'checkin', 'checkout', 'total_cost', 'adults', 'children', 'infants'],
 });
 
 
 class User {
   constructor(id) {
-    this.user_id = id;
+    this.userid = id;
     this.dateCreated = faker.date.between(2010, 2020);
-    this.userName = faker.internet.userName();
+    this.username = faker.internet.userName();
     this.password = faker.internet.password();
   }
 }
 
 class Location {
   constructor(id, userId) {
-    this.location_id = id;
-    this.host_id = userId;
-    this.address = faker.fake('{{address.streetAddress}}, {{address.city}}, {{address.state}}');
+    this.locationid = id;
+    this.hostid = userId;
+    this.address = faker.fake('{{address.streetAddress}}');
     this.rate = faker.random.number({ min: 50, max: 300 });
-    this.avg_rating = faker.random.number({ min: 1, max: 4 }) + Math.random();
+    this.avg_rating = Math.round(((faker.random.number({ min: 1, max: 4 }) + Math.random()) * 10) / 10);
     this.total_reviews = faker.random.number({ min: 1, max: 2000 });
     this.service_fee = faker.random.number({ min: 30, max: 50 });
     this.cleaning_fee = faker.random.number({ min: 10, max: 30 });
@@ -87,9 +63,9 @@ class Booking {
     this.date = new Date();
     this.yearLater = new Date(this.date.getTime() + (24 * 60 * 60 * 1000) * 90);
     this.duration = faker.random.number({ min: 1, max: 14 });
-    this.booking_id = id;
-    this.user_id = userId;
-    this.location_id = locationId;
+    this.bookingid = id;
+    this.userid = userId;
+    this.locationid = locationId;
     this.checkin = faker.date.between(this.date, this.yearLater);
     this.checkout = new Date(this.checkin.getTime() + (24 * 60 * 60 * 1000) * this.duration);
     this.total_cost = faker.random.number({ min: 50, max: 300 }) * this.duration;
@@ -100,27 +76,45 @@ class Booking {
 }
 
 
-const generateUsers = () => {
+const generateUsers = (elapsedMult) => {
+  let startIndex = 0;
+  startIndex += USER_COUNT * elapsedMult;
+
+  let endIndex = USER_COUNT;
+  endIndex += USER_COUNT * elapsedMult;
+
   const users = [];
-  for (let i = 0; i < USER_COUNT; i += 1) {
+  for (let i = startIndex; i < endIndex; i += 1) {
     users.push(new User(i));
     bar.increment();
   }
   return users;
 };
 
-const generateLocations = () => {
+const generateLocations = (elapsedMult) => {
+  let startIndex = 0;
+  startIndex += LOCATION_COUNT * elapsedMult;
+
+  let endIndex = LOCATION_COUNT;
+  endIndex += LOCATION_COUNT * elapsedMult;
+
   const locations = [];
-  for (let i = 0; i < LOCATION_COUNT; i += 1) {
+  for (let i = startIndex; i < endIndex; i += 1) {
     locations.push(new Location(i, faker.random.number({ min: 0, max: HOST_COUNT })));
     bar2.increment();
   }
   return locations;
 };
 
-const generateBookings = () => {
+const generateBookings = (elapsedMult) => {
+  let startIndex = 0;
+  startIndex += BOOKING_COUNT * elapsedMult;
+
+  let endIndex = BOOKING_COUNT;
+  endIndex += BOOKING_COUNT * elapsedMult;
+
   const bookings = [];
-  for (let i = 0; i < BOOKING_COUNT; i += 1) {
+  for (let i = startIndex; i < endIndex; i += 1) {
     const newBooking = new Booking(
       i,
       faker.random.number({ min: 0, max: USER_COUNT }),
@@ -136,29 +130,32 @@ const generateBookings = () => {
 const writeBookings = () => {
   if (multiplier !== 0) {
     multiplier -= 1;
-    const bookingsData = generateBookings();
+    const bookingsData = generateBookings(elapsedWrites);
+    elapsedWrites += 1;
     bookingWriter.writeRecords(bookingsData)
       .then(() => {
         writeBookings();
       });
   } else {
     bar3.stop();
+    elapsedWrites = 0;
     console.log(`Bookings written - ${Math.abs(startTime - new Date().getTime())}ms elapsed`);
-    startTime = new Date();
-    multiplier = multiplierStart;
+    console.log(`${Math.abs(originalTime - new Date().getTime())}ms elapsed in total`);
   }
 };
 
 const writeLocations = () => {
   if (multiplier !== 0) {
     multiplier -= 1;
-    const locationsData = generateLocations();
+    const locationsData = generateLocations(elapsedWrites);
+    elapsedWrites += 1;
     locationWriter.writeRecords(locationsData)
       .then(() => {
         writeLocations();
       });
   } else {
     bar2.stop();
+    elapsedWrites = 0;
     console.log(`Locations written - ${Math.abs(startTime - new Date().getTime())}ms elapsed`);
     startTime = new Date();
     multiplier = multiplierStart;
@@ -170,13 +167,15 @@ const writeLocations = () => {
 const writeUsers = () => {
   if (multiplier !== 0) {
     multiplier -= 1;
-    const usersData = generateUsers();
+    const usersData = generateUsers(elapsedWrites);
+    elapsedWrites += 1;
     userWriter.writeRecords(usersData)
       .then(() => {
         writeUsers();
       });
   } else {
     bar.stop();
+    elapsedWrites = 0;
     console.log(`Users written - ${Math.abs(startTime - new Date().getTime())}ms elapsed`);
     startTime = new Date();
     multiplier = multiplierStart;
