@@ -40,3 +40,5 @@ ALTER TABLE locations ADD CONSTRAINT fk1 FOREIGN KEY (hostid) REFERENCES users(u
 ALTER TABLE bookings ADD CONSTRAINT fk2 FOREIGN KEY (userid) REFERENCES users(userid);
 
 ALTER TABLE bookings ADD CONSTRAINT fk3 FOREIGN KEY (locationid) REFERENCES locations(locationid);
+
+CREATE INDEX locationidIndex ON bookings (locationid);

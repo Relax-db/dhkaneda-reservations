@@ -23,7 +23,7 @@ CREATE TABLE locations (
   adults int,
   children int,
   infants int,
-  PRIMARY KEY (locationid, checkin)
+  PRIMARY KEY (locationid, checkin, bookingid)
 );
 
 CREATE TABLE users (
@@ -38,7 +38,7 @@ CREATE TABLE users (
   adults int,
   children int,
   infants int,
-  PRIMARY KEY (userid)
+  PRIMARY KEY (userid, checkin, bookingid)
 );
 
 COPY locations (bookingid, userid, locationid, hostid,address, rate, avg_rating, total_reviews, service_fee, cleaning_fee, occupancy_tax, checkin, checkout, total_cost, adults, children, infants) FROM '/Users/dhkaneda/Development/reservation-services/db/cassandra/data/bookingsByLocation.csv';
