@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 const Sequelize = require('sequelize');
-const Promise = require('bluebird');
 
 const database = 'reservation_service';
 const user = 'dhkaneda';

@@ -1,9 +1,7 @@
 const _ = require('lodash');
 const db = require('../../db');
 
-const executeQuery = (query, values) => {
-  return db.query(query, values).spread((results) => results);
-};
+const executeQuery = (query, values) => db.query(query, values).spread((results) => results);
 
 const parseData = (options) => {
   return _.reduce(options, (parsed, value, key) => {
