@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+require('newrelic');
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
@@ -28,10 +29,26 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 //   res.sendFile(path.resolve(__dirname, '../client/dist/index.html'));
 // });
 
-app.get('/test', (req, res) => {
+app.get('/api/locations', (req, res) => {
   model.Bookings.getRandomOne()
-    .then((bookings) => {
-      res.send(bookings);
+    .then((booking) => {
+      model.Locations.get({ locationid: booking.locationid })
+        .then((location) => {
+          res.send(location);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+});
+
+app.get('/api/bookings', (req, res) => {
+  model.Bookings.getRandomOne()
+    .then((booking) => {
+      model.Bookings.getAll({ locationid: booking.locationid })
+        .then((bookings) => {
+          res.send(bookings);
+        });
     })
     .catch((err) => {
       console.log(err);

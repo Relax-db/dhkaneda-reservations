@@ -1,3 +1,4 @@
+const faker = require('faker');
 const Model = require('./model');
 
 const BOOKING_COUNT = 20000000;
@@ -10,12 +11,9 @@ class Bookings extends Model {
   // returns PROMISE<object> with a random booking id
   getRandomOne() {
     const randomId = {
-      bookingid: Math.floor(Math.random() * BOOKING_COUNT),
+      bookingid: faker.random.number({ min: 0, max: BOOKING_COUNT }),
     };
-    return super.get.call(this, randomId)
-      .then((booking) => {
-        return super.getAll.call(this, { locationid: booking.locationid });
-      });
+    return super.get.call(this, randomId);
   }
 }
 

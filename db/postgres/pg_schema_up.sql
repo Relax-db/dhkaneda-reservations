@@ -1,12 +1,12 @@
 CREATE TABLE users (
-  userid INT PRIMARY KEY,
+  userid SERIAL PRIMARY KEY,
   dateCreated VARCHAR(250),
   username VARCHAR(50),
   password VARCHAR(50)
 );
 
 CREATE TABLE locations (
-  locationid INT PRIMARY KEY,
+  locationid SERIAL PRIMARY KEY,
   hostid INT,
   locationaddress VARCHAR(250),
   rate SMALLINT,
@@ -18,7 +18,7 @@ CREATE TABLE locations (
 );
 
 CREATE TABLE bookings (
-  bookingid INT PRIMARY KEY,
+  bookingid SERIAL PRIMARY KEY,
   userid INT,
   locationid INT,
   checkin VARCHAR(250),

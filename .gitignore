@@ -26,3 +26,5 @@ bundle.js
 
 db/cassandra/data
 db/postgres/data
+
+newrelic.js
