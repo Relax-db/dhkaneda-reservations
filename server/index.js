@@ -2,6 +2,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const model = require('./models');
+// const Bookings = require('./models/bookings');
 
 const app = express();
 const port = 3000;
@@ -27,5 +29,11 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 // });
 
 app.get('/test', (req, res) => {
-  res.send('test');
+  model.Bookings.getRandomOne()
+    .then((bookings) => {
+      res.send(bookings);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });

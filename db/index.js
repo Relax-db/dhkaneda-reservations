@@ -4,9 +4,9 @@ const Promise = require('bluebird');
 
 const database = 'reservation_service';
 const user = 'dhkaneda';
-const password = null;
+const password = 'changelater';
 
-const connection = new Sequelize(database, user, password, {
+const db = new Sequelize(database, user, password, {
   host: 'localhost',
   dialect: 'postgres',
   pool: {
@@ -15,8 +15,6 @@ const connection = new Sequelize(database, user, password, {
     idle: 10000,
   },
 });
-
-const db = Promise.promisifyAll(connection, { multiArgs: true });
 
 db.authenticate()
   .then(() => {
