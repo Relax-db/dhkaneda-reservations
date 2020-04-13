@@ -32,27 +32,29 @@ class Model {
     return executeQuery(queryString, parsedOptions.values).then((results) => results[0]);
   }
 
-  create(options) {
-    const queryString = `INSERT INTO ${this.tablename} SET ?`;
-    return executeQuery(queryString, options);
-  }
 
-  update(options, values) {
-    const parsedOptions = parseData(options);
-    const queryString = `UPDATE ${this.tablename} SET ? WHERE ${parsedOptions.string.join(' AND ')};`;
-    return executeQuery(queryString, Array.prototype.concat(values, parsedOptions.values));
-  }
+  // VERIFY operation with Sequelize over raw mysql driver
+  // create(options) {
+  //   const queryString = `INSERT INTO ${this.tablename} SET ?`;
+  //   return executeQuery(queryString, options);
+  // }
 
-  delete(options) {
-    const parsedOptions = parseData(options);
-    const queryString = `DELETE FROM ${this.tablename} WHERE ${parsedOptions.string.join(' AND ')};`;
-    return executeQuery(queryString, parsedOptions.values);
-  }
+  // update(options, values) {
+  //   const parsedOptions = parseData(options);
+  //   const queryString = `UPDATE ${this.tablename} SET ? WHERE ${parsedOptions.string.join(' AND ')};`;
+  //   return executeQuery(queryString, Array.prototype.concat(values, parsedOptions.values));
+  // }
 
-  deleteAll() {
-    const queryString = `TRUNCATE TABLE ${this.tablename};`;
-    return executeQuery(queryString);
-  }
+  // delete(options) {
+  //   const parsedOptions = parseData(options);
+  //   const queryString = `DELETE FROM ${this.tablename} WHERE ${parsedOptions.string.join(' AND ')};`;
+  //   return executeQuery(queryString, parsedOptions.values);
+  // }
+
+  // deleteAll() {
+  //   const queryString = `TRUNCATE TABLE ${this.tablename};`;
+  //   return executeQuery(queryString);
+  // }
 }
 
 module.exports = Model;
