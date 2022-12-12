@@ -21,7 +21,7 @@
     "cors": "^2.8.5",
     "csv-writer": "^1.6.0",
     "date-faker": "^1.1.5",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "faker": "^4.1.0",
     "jquery": "^3.4.1",
     "lodash": "^4.17.15",
